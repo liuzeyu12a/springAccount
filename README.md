@@ -1,5 +1,4 @@
-## springAccount
-spring银行转账案例
+## springAccount spring银行转账案例
 
 ## 案例 day03_spring_account 采用手动创建动态代理机制添加事务
 
