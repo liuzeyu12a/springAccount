@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!-- 配置Service -->
+    <!--<bean id="accountService" class="com.liuzeyu.service.impl.AccountServiceImpl">-->
+        <!--&lt;!&ndash; 注入dao &ndash;&gt;-->
+        <!--<property name="accountDao" ref="accountDao"></property>-->
+        <!--&lt;!&ndash;注入事务管理器&ndash;&gt;-->
+        <!--<property name="txManger" ref="txManger"></property>-->
+    <!--</bean>-->
+
+    <!-- 配置代理Service -->
+    <bean id="accountSerivce_OLD" class="com.liuzeyu.service.impl.AccountServiceImpl_OLD">
+        <property name="accountDao" ref="accountDao"></property>
+    </bean>
+    <bean id="beanFactory" class="com.liuzeyu.factory.BeanFactory">
+        <property name="accountService" ref="accountSerivce_OLD"></property>
+        <property name="txManger" ref="txManger"></property>
+    </bean>
+    <bean id="proxy_accountService" factory-bean="beanFactory" factory-method="getAccountService">
+    </bean>
+
+    <!--配置Dao对象-->
+    <bean id="accountDao" class="com.liuzeyu.dao.impl.AccountDaoImpl">
+        <!-- 注入QueryRunner -->
+        <property name="runner" ref="runner"></property>
+        <!--注入connectionUtils-->
+        <property name="connectionUtils" ref="connectionUtils"></property>
+    </bean>
+
+    <!--配置QueryRunner-->
+    <bean id="runner" class="org.apache.commons.dbutils.QueryRunner" scope="prototype">
+        <!--&lt;!&ndash;注入数据源&ndash;&gt;-->        <!--连接不从连接池中获取-->
+        <!--<constructor-arg name="ds" ref="dataSource"></constructor-arg>-->
+    </bean>
+
+    <!-- 配置数据源 -->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <!--连接数据库的必备信息-->
+        <property name="driverClass" value="com.mysql.jdbc.Driver"></property>
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/eesy"></property>
+        <property name="user" value="root"></property>
+        <property name="password" value="809080"></property>
+    </bean>
+
+    <!--配置Connection工具类 ConnectionUtils-->
+    <bean id="connectionUtils" class="com.liuzeyu.utils.ConnectionUtils">
+        <property name="dataSource" ref="dataSource"></property>
+    </bean>
+
+    <!--配置事务-->
+    <bean id="txManger" class="com.liuzeyu.utils.TransactionManger">
+        <!--注入connectionUtils-->
+        <property name="connectionUtils" ref="connectionUtils"></property>
+    </bean>
+</beans>
